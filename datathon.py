@@ -15,8 +15,13 @@ from IPython.display import Image
 
 def make_colormap(seq):
     """Return a LinearSegmentedColormap
-    seq: a sequence of floats and RGB-tuples. The floats should be increasing
-    and in the interval (0,1).
+
+    Args: 
+        seq (list): a sequence of floats and RGB-tuples. The floats should be 
+            increasing and in the interval (0,1).
+
+    Returns: 
+        colormap (object): matplotlib colormap
     """
     seq = [(None,) * 3, 0.0] + list(seq) + [1.0, (None,) * 3]
     cdict = {'red': [], 'green': [], 'blue': []}
@@ -29,15 +34,20 @@ def make_colormap(seq):
             cdict['blue'].append([item, b1, b2])
     return matplotlib.colors.LinearSegmentedColormap('CustomMap', cdict)
 
-
-def plot_model_pred_2d(mdl, X, y,
-                       cm=None, cbar=True, xlabel=None, ylabel=None):
+def plot_model_pred_2d(mdl, X, y, cm=None, cbar=True, xlabel=None, ylabel=None):
     """
-    For a 2D dataset, plot the decision surface of a tree model.
-    """
-    # look at the regions in a 2d plot
-    # based on scikit-learn tutorial plot_iris.html
+    For a 2D dataset, plot the decision surface of a tree model. Look at the 
+    regions in a 2d plot. Based on scikit-learn tutorial plot_iris.html
 
+    Args:
+        mdl (Obj): Model used for prediction.
+        X ():
+        y (): 
+        cm (Obj): Colormap.
+        cbar (Bool): Display the colorbar. 
+        xlabel (str): Label for the x-axis.
+        ylabel (str): Label for the y-axis.
+    """
     # get minimum and maximum values
     x0_min = X[:, 0].min()
     x0_max = X[:, 0].max()
@@ -80,13 +90,19 @@ def plot_model_pred_2d(mdl, X, y,
     if cbar:
         plt.colorbar()
 
-
 def create_graph(mdl, feature_names=None, cmap=None):
     """
     Display a graph of the decision tree.
 
-    cmap is a colormap
-    e.g.
+    Args:
+        mdl (Obj): Model used for prediction.
+        feature_names (List): Names of the features.
+        cmap (Obj): Colormap.
+
+    Returns:
+        graph (Obj): Graphviz graph.
+
+    Example usage:
       cmap = np.linspace(0.0, 1.0, 256, dtype=float)
       cmap = matplotlib.cm.coolwarm(cmap)
     """
@@ -120,11 +136,14 @@ def create_graph(mdl, feature_names=None, cmap=None):
     Image(graph.create_png())
     return graph
 
-
 def prune(dt, min_samples_leaf=1):
     """
-    Implicitly prune model by setting node children to -1.
-    Note: displaying the graph will still show all nodes.
+    Implicitly prune model by setting node children to -1. Note: displaying the 
+    graph will still show all nodes.
+
+    Args:
+        dt (Obj): The decision tree to be pruned.
+        min_samples_leaf (int): Minimum number of samples. 
     """
     # Pruning is done by the "min_samples_leaf" property of decision trees
     if dt.min_samples_leaf >= min_samples_leaf:
@@ -146,6 +165,13 @@ def prune(dt, min_samples_leaf=1):
 def run_query(query, project_id):
     """
     Read data from BigQuery into a DataFrame.
+
+    Args:
+        query (str): The query string in standard BigQuery dialect.
+        project_id (str): The Google Project ID used for billing purposes.
+
+    Returns:
+        df (pd.DataFrame): Results to the query.
     """
     return pd.io.gbq.read_gbq(query, project_id=project_id, verbose=False, 
         configuration={'query':{'useLegacySql': False}})
