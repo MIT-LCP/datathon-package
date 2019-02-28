@@ -6,9 +6,7 @@ __version__ = "0.1.0"
 
 import pandas as pd
 import numpy as np
-
 from sklearn import tree
-
 import pydotplus
 import matplotlib
 import matplotlib.pyplot as plt
@@ -144,3 +142,10 @@ def prune(dt, min_samples_leaf=1):
                 # instead, we remove the split by setting the child values to -1
                 tree.children_left[i] = -1
                 tree.children_right[i] = -1
+
+def run_query(query, project_id):
+    """
+    Read data from BigQuery into a DataFrame.
+    """
+    return pd.io.gbq.read_gbq(query, project_id=project_id, verbose=False, 
+        configuration={'query':{'useLegacySql': False}})
