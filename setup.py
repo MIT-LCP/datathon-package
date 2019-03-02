@@ -17,7 +17,7 @@ setup(
     # Versions should comply with PEP440. For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='0.1.2',
+    version='0.1.3',
 
     description='datathon2',
     long_description=long_description,
@@ -48,12 +48,16 @@ setup(
     # your project is installed. For an analysis of "install_requires" vs pip's
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
+
+    # Note: tableone is not used in the package, but adding it as a dependency
+    # avoids requirement to pip install it separately
     install_requires=[
         'pandas>=0.22.0',
         'numpy>=1.12.1',
         'scikit-learn>=0.19.0',
         'pydotplus>=2.0.0',
-        'matplotlib>=2.0.0'
+        'matplotlib>=2.0.0',
+        'tableone>=0.6.0'
         ],
 
     # List additional groups of dependencies here (e.g. development
