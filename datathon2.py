@@ -41,8 +41,8 @@ def plot_model_pred_2d(mdl, X, y, cm=None, cbar=True, xlabel=None, ylabel=None):
 
     Args:
         mdl (Obj): Model used for prediction.
-        X ():
-        y (): 
+        X (np.ndarray): Array of n predictor variables, shaped (n, 2)
+        y (np.ndarray): Array of n outcomes, shaped (n,)
         cm (Obj): Colormap.
         cbar (Bool): Display the colorbar. 
         xlabel (str): Label for the x-axis.
