@@ -17,7 +17,7 @@ setup(
     # Versions should comply with PEP440. For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='0.1.1',
+    version='0.1.2',
 
     description='datathon2',
     long_description=long_description,
@@ -51,6 +51,9 @@ setup(
     install_requires=[
         'pandas>=0.22.0',
         'numpy>=1.12.1',
+        'scikit-learn>=0.19.0',
+        'pydotplus>=2.0.0',
+        'matplotlib>=2.0.0'
         ],
 
     # List additional groups of dependencies here (e.g. development
