@@ -2,7 +2,7 @@
 The datathon package is a collection of helper functions used when running datathons.
 """
 
-__version__ = "0.1.2"
+__version__ = "0.1.3"
 
 import pandas as pd
 import numpy as np
@@ -41,13 +41,21 @@ def plot_model_pred_2d(mdl, X, y, cm=None, cbar=True, xlabel=None, ylabel=None):
 
     Args:
         mdl (Obj): Model used for prediction.
-        X (np.ndarray): Array of n predictor variables, shaped (n, 2)
-        y (np.ndarray): Array of n outcomes, shaped (n,)
+        X (np.ndarray): 2D array of n predictor variables, shaped (n, 2)
+        y (np.ndarray): 1D array of n outcomes, shaped (n,)
         cm (Obj): Colormap.
         cbar (Bool): Display the colorbar. 
         xlabel (str): Label for the x-axis.
         ylabel (str): Label for the y-axis.
     """
+    # handle a dataframe as input
+    if isinstance(X,pd.DataFrame):
+        if xlabel is None:
+            xlabel = X.columns[0]
+        if ylabel is None:
+            ylabel = X.columns[1]
+        X = np.array(X)
+
     # get minimum and maximum values
     x0_min = X[:, 0].min()
     x0_max = X[:, 0].max()
@@ -62,30 +70,35 @@ def plot_model_pred_2d(mdl, X, y, cm=None, cbar=True, xlabel=None, ylabel=None):
 
     if not cm:
         # custom colormap
-        # e58139f9 - orange
-        # 399de5e0 - to blue
         s = list()
-
+        # e58139f9 - orange
         lo = np.array(matplotlib.colors.to_rgb('#e5813900'))
+        # 399de5e0 - to blue
         hi = np.array(matplotlib.colors.to_rgb('#399de5e0'))
-
         for i in range(255):
             s.append(list((hi-lo)*(float(i)/255)+lo))
         cm = make_colormap(s)
 
-    # plot the contour - colouring different regions
+    # plot the contour.
+    # colour different regions
     plt.contourf(xx, yy, Z, cmap=cm)
 
-    # plot the individual data points - colouring by the *true* outcome
+    # plot the individual data points. 
+    # colour by the *true* outcome
     color = y.ravel()
     plt.scatter(X[:, 0], X[:, 1], c=color, edgecolor='k', linewidth=2,
                 marker='o', s=60, cmap=cm)
 
-    if xlabel is not None:
-        plt.xlabel(xlabel)
-    if ylabel is not None:
-        plt.ylabel(ylabel)
+    # add labels
+    if xlabel is None:
+        xlabel = "var1"
+    if ylabel is None:
+        ylabel = "var2"
+
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
     plt.axis("tight")
+
     # plt.clim([-1.5,1.5])
     if cbar:
         plt.colorbar()
