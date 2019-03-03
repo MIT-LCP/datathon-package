@@ -2,7 +2,7 @@
 The datathon package is a collection of helper functions used when running datathons.
 """
 
-__version__ = "0.1.3"
+__version__ = "0.1.4"
 
 import pandas as pd
 import numpy as np
@@ -34,6 +34,16 @@ def make_colormap(seq):
             cdict['blue'].append([item, b1, b2])
     return matplotlib.colors.LinearSegmentedColormap('CustomMap', cdict)
 
+def discrete_cmap(N, base_cmap=None):
+    """
+    Create an N-bin discrete colormap from the specified input map
+    By @jakevdp: https://gist.github.com/jakevdp/91077b0cae40f8f8244a
+    """
+    base = plt.cm.get_cmap(base_cmap)
+    color_list = base(np.linspace(0, 1, N))
+    cmap_name = base.name + str(N)
+    return base.from_list(cmap_name, color_list, N)
+
 def plot_model_pred_2d(mdl, X, y, cm=None, cbar=True, xlabel=None, ylabel=None):
     """
     For a 2D dataset, plot the decision surface of a tree model. Look at the 
@@ -49,22 +59,25 @@ def plot_model_pred_2d(mdl, X, y, cm=None, cbar=True, xlabel=None, ylabel=None):
         ylabel (str): Label for the y-axis.
     """
     # handle a dataframe as input
-    if isinstance(X,pd.DataFrame):
+    if isinstance(X, pd.DataFrame):
         if xlabel is None:
             xlabel = X.columns[0]
         if ylabel is None:
             ylabel = X.columns[1]
-        X = np.array(X)
+        X = X.values
 
-    # get minimum and maximum values
+    if isinstance(y, pd.Series):
+        y = y.values
+
+    # create grid to match the size of the predictor values
     x0_min = X[:, 0].min()
     x0_max = X[:, 0].max()
     x1_min = X[:, 1].min()
     x1_max = X[:, 1].max()
-
     xx, yy = np.meshgrid(np.linspace(x0_min, x0_max, 100),
                          np.linspace(x1_min, x1_max, 100))
 
+    # create vector of predictions using the xx, yy grid
     Z = mdl.predict(np.c_[xx.ravel(), yy.ravel()])
     Z = Z.reshape(xx.shape)
 
@@ -99,9 +112,9 @@ def plot_model_pred_2d(mdl, X, y, cm=None, cbar=True, xlabel=None, ylabel=None):
     plt.ylabel(ylabel)
     plt.axis("tight")
 
-    # plt.clim([-1.5,1.5])
+    plt.clim(-0.5, N - 0.5)
     if cbar:
-        plt.colorbar()
+        plt.colorbar(ticks=range(N))
 
 def create_graph(mdl, feature_names=None, cmap=None):
     """
