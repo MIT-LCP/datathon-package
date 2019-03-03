@@ -2,7 +2,7 @@
 The datathon package is a collection of helper functions used when running datathons.
 """
 
-__version__ = "0.1.6"
+__version__ = "0.1.7"
 
 import pandas as pd
 import numpy as np
@@ -101,7 +101,7 @@ def plot_model_pred_2d(mdl, X, y, cm=None, cbar=True, xlabel=None, ylabel=None):
     # colour by the *true* outcome
     color = y.ravel()
     plt.scatter(X[:, 0], X[:, 1], c=color, edgecolor='k', linewidth=2,
-                marker='o', s=60, cmap=cm)
+                marker='o', s=60, cmap=discrete_cmap(N, base_cmap=cm))
 
     # add labels
     if xlabel is None:
