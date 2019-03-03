@@ -2,7 +2,7 @@
 The datathon package is a collection of helper functions used when running datathons.
 """
 
-__version__ = "0.1.9"
+__version__ = "0.1.10"
 
 import pandas as pd
 import numpy as np
@@ -21,7 +21,7 @@ def make_colormap(seq):
             increasing and in the interval (0,1).
 
     Returns: 
-        colormap (obj): matplotlib colormap
+        colormap (obj): matplotlib colormap.
     """
     seq = [(None,) * 3, 0.0] + list(seq) + [1.0, (None,) * 3]
     cdict = {'red': [], 'green': [], 'blue': []}
@@ -45,19 +45,20 @@ def discrete_cmap(N, base_cmap=None):
     return base.from_list(cmap_name, color_list, N)
 
 def plot_model_pred_2d(mdl, X, y, cm=None, cbar=True, xlabel=None, ylabel=None, 
-    tight=True):
+    title=None, tight=True):
     """
     For a 2D dataset, plot the decision surface of a tree model. 
     Based on scikit-learn tutorial plot_iris.html
 
     Args:
         mdl (obj): Model used for prediction.
-        X (np.ndarray): 2D array of n predictor variables, shaped (n, 2)
-        y (np.ndarray): 1D array of n outcomes, shaped (n,)
+        X (np.ndarray): 2D array of n predictor variables, shaped (n, 2).
+        y (np.ndarray): 1D array of n outcomes, shaped (n,).
         cm (obj): Colormap.
         cbar (bool): Display the colorbar. 
         xlabel (str): Label for the x-axis.
         ylabel (str): Label for the y-axis.
+        title (str): A title for the plot.
         tight (bool): Apply plt.tight_layout to avoid overlapping plots.
     """
     # handle a dataframe as input
@@ -118,6 +119,10 @@ def plot_model_pred_2d(mdl, X, y, cm=None, cbar=True, xlabel=None, ylabel=None,
     plt.clim(-0.5, N - 0.5)
     if cbar:
         plt.colorbar(ticks=range(N))
+
+    # title
+    if title:
+        plt.title(title)
 
     # avoid overlapping on subplots
     if tight:
