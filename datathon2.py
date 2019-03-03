@@ -2,7 +2,7 @@
 The datathon package is a collection of helper functions used when running datathons.
 """
 
-__version__ = "0.1.5"
+__version__ = "0.1.6"
 
 import pandas as pd
 import numpy as np
@@ -95,7 +95,7 @@ def plot_model_pred_2d(mdl, X, y, cm=None, cbar=True, xlabel=None, ylabel=None):
     # plot the contour.
     # colour regions of the decision boundary
     N = len(set(y))
-    plt.contourf(xx, yy, Z, cmap=discrete_cmap(cm, N))
+    plt.contourf(xx, yy, Z, cmap=discrete_cmap(N, base_cmap=cm))
 
     # plot the individual data points. 
     # colour by the *true* outcome
