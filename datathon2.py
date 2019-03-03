@@ -2,7 +2,7 @@
 The datathon package is a collection of helper functions used when running datathons.
 """
 
-__version__ = "0.1.7"
+__version__ = "0.1.9"
 
 import pandas as pd
 import numpy as np
@@ -21,7 +21,7 @@ def make_colormap(seq):
             increasing and in the interval (0,1).
 
     Returns: 
-        colormap (object): matplotlib colormap
+        colormap (obj): matplotlib colormap
     """
     seq = [(None,) * 3, 0.0] + list(seq) + [1.0, (None,) * 3]
     cdict = {'red': [], 'green': [], 'blue': []}
@@ -36,7 +36,7 @@ def make_colormap(seq):
 
 def discrete_cmap(N, base_cmap=None):
     """
-    Create an N-bin discrete colormap from the specified input map
+    Create an N-bin discrete colormap from the input map
     By @jakevdp: https://gist.github.com/jakevdp/91077b0cae40f8f8244a
     """
     base = plt.cm.get_cmap(base_cmap)
@@ -44,19 +44,21 @@ def discrete_cmap(N, base_cmap=None):
     cmap_name = base.name + str(N)
     return base.from_list(cmap_name, color_list, N)
 
-def plot_model_pred_2d(mdl, X, y, cm=None, cbar=True, xlabel=None, ylabel=None):
+def plot_model_pred_2d(mdl, X, y, cm=None, cbar=True, xlabel=None, ylabel=None, 
+    tight=True):
     """
-    For a 2D dataset, plot the decision surface of a tree model. Look at the 
-    regions in a 2d plot. Based on scikit-learn tutorial plot_iris.html
+    For a 2D dataset, plot the decision surface of a tree model. 
+    Based on scikit-learn tutorial plot_iris.html
 
     Args:
-        mdl (Obj): Model used for prediction.
+        mdl (obj): Model used for prediction.
         X (np.ndarray): 2D array of n predictor variables, shaped (n, 2)
         y (np.ndarray): 1D array of n outcomes, shaped (n,)
-        cm (Obj): Colormap.
-        cbar (Bool): Display the colorbar. 
+        cm (obj): Colormap.
+        cbar (bool): Display the colorbar. 
         xlabel (str): Label for the x-axis.
         ylabel (str): Label for the y-axis.
+        tight (bool): Apply plt.tight_layout to avoid overlapping plots.
     """
     # handle a dataframe as input
     if isinstance(X, pd.DataFrame):
@@ -117,17 +119,21 @@ def plot_model_pred_2d(mdl, X, y, cm=None, cbar=True, xlabel=None, ylabel=None):
     if cbar:
         plt.colorbar(ticks=range(N))
 
+    # avoid overlapping on subplots
+    if tight:
+        plt.tight_layout()
+
 def create_graph(mdl, feature_names=None, cmap=None):
     """
     Display a graph of the decision tree.
 
     Args:
-        mdl (Obj): Model used for prediction.
-        feature_names (List): Names of the features.
-        cmap (Obj): Colormap.
+        mdl (obj): Model used for prediction.
+        feature_names (list): Names of the features.
+        cmap (obj): Colormap.
 
     Returns:
-        graph (Obj): Graphviz graph.
+        graph (obj): Graphviz graph.
 
     Example usage:
       cmap = np.linspace(0.0, 1.0, 256, dtype=float)
@@ -165,16 +171,16 @@ def create_graph(mdl, feature_names=None, cmap=None):
 
 def prune(dt, min_samples_leaf=1):
     """
-    Implicitly prune model by setting node children to -1. Note: displaying the 
+    Prune a tree model by setting node children to -1. Note: displaying the 
     graph will still show all nodes.
 
     Args:
-        dt (Obj): The decision tree to be pruned.
+        dt (obj): The decision tree to be pruned.
         min_samples_leaf (int): Minimum number of samples. 
     """
     # Pruning is done by the "min_samples_leaf" property of decision trees
     if dt.min_samples_leaf >= min_samples_leaf:
-        print('Decision tree is pruned at an equal or higher level.')
+        print('The tree is already pruned at an equal or higher level.')
     else:
         # update prune parameter
         dt.min_samples_leaf = min_samples_leaf
@@ -188,6 +194,8 @@ def prune(dt, min_samples_leaf=1):
                 # instead, we remove the split by setting the child values to -1
                 tree.children_left[i] = -1
                 tree.children_right[i] = -1
+
+    return dt
 
 def run_query(query, project_id):
     """
