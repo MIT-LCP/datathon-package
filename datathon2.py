@@ -2,7 +2,7 @@
 The datathon package is a collection of helper functions used when running datathons.
 """
 
-__version__ = "0.1.10"
+__version__ = "0.1.11"
 
 import pandas as pd
 import numpy as np
@@ -16,11 +16,11 @@ from IPython.display import Image
 def make_colormap(seq):
     """Return a LinearSegmentedColormap
 
-    Args: 
-        seq (list): a sequence of floats and RGB-tuples. The floats should be 
+    Args:
+        seq (list): a sequence of floats and RGB-tuples. The floats should be
             increasing and in the interval (0,1).
 
-    Returns: 
+    Returns:
         colormap (obj): matplotlib colormap.
     """
     seq = [(None,) * 3, 0.0] + list(seq) + [1.0, (None,) * 3]
@@ -34,6 +34,7 @@ def make_colormap(seq):
             cdict['blue'].append([item, b1, b2])
     return matplotlib.colors.LinearSegmentedColormap('CustomMap', cdict)
 
+
 def discrete_cmap(N, base_cmap=None):
     """
     Create an N-bin discrete colormap from the input map
@@ -44,10 +45,11 @@ def discrete_cmap(N, base_cmap=None):
     cmap_name = base.name + str(N)
     return base.from_list(cmap_name, color_list, N)
 
-def plot_model_pred_2d(mdl, X, y, cm=None, cbar=True, xlabel=None, ylabel=None, 
+
+def plot_model_pred_2d(mdl, X, y, cm=None, cbar=True, xlabel=None, ylabel=None,
     title=None, tight=True):
     """
-    For a 2D dataset, plot the decision surface of a tree model. 
+    For a 2D dataset, plot the decision surface of a tree model.
     Based on scikit-learn tutorial plot_iris.html
 
     Args:
@@ -55,7 +57,7 @@ def plot_model_pred_2d(mdl, X, y, cm=None, cbar=True, xlabel=None, ylabel=None,
         X (np.ndarray): 2D array of n predictor variables, shaped (n, 2).
         y (np.ndarray): 1D array of n outcomes, shaped (n,).
         cm (obj): Colormap.
-        cbar (bool): Display the colorbar. 
+        cbar (bool): Display the colorbar.
         xlabel (str): Label for the x-axis.
         ylabel (str): Label for the y-axis.
         title (str): A title for the plot.
@@ -100,7 +102,7 @@ def plot_model_pred_2d(mdl, X, y, cm=None, cbar=True, xlabel=None, ylabel=None,
     N = len(set(y))
     plt.contourf(xx, yy, Z, cmap=discrete_cmap(N, base_cmap=cm))
 
-    # plot the individual data points. 
+    # plot the individual data points.
     # colour by the *true* outcome
     color = y.ravel()
     plt.scatter(X[:, 0], X[:, 1], c=color, edgecolor='k', linewidth=2,
@@ -127,6 +129,7 @@ def plot_model_pred_2d(mdl, X, y, cm=None, cbar=True, xlabel=None, ylabel=None,
     # avoid overlapping on subplots
     if tight:
         plt.tight_layout()
+
 
 def create_graph(mdl, feature_names=None, cmap=None):
     """
@@ -174,14 +177,15 @@ def create_graph(mdl, feature_names=None, cmap=None):
     Image(graph.create_png())
     return graph
 
+
 def prune(dt, min_samples_leaf=1):
     """
-    Prune a tree model by setting node children to -1. Note: displaying the 
+    Prune a tree model by setting node children to -1. Note: displaying the
     graph will still show all nodes.
 
     Args:
         dt (obj): The decision tree to be pruned.
-        min_samples_leaf (int): Minimum number of samples. 
+        min_samples_leaf (int): Minimum number of samples.
     """
     # Pruning is done by the "min_samples_leaf" property of decision trees
     if dt.min_samples_leaf >= min_samples_leaf:
@@ -202,6 +206,7 @@ def prune(dt, min_samples_leaf=1):
 
     return dt
 
+
 def run_query(query, project_id):
     """
     Read data from BigQuery into a DataFrame.
@@ -213,5 +218,4 @@ def run_query(query, project_id):
     Returns:
         df (pd.DataFrame): Results to the query.
     """
-    return pd.io.gbq.read_gbq(query, project_id=project_id, verbose=False, 
-        configuration={'query':{'useLegacySql': False}})
+    return pd.io.gbq.read_gbq(query, project_id=project_id, dialect="standard")
